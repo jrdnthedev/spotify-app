@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+.env
 # Build and Release Folders
 bin-debug/
 bin-release/
