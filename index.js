@@ -1,7 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const querystring = require('querystring');
-const app = express();
+const cors = require('cors')
+const app = express().use('*', cors());
 const axios = require('axios');
 const port = 8888;
 
@@ -31,7 +32,7 @@ const generateRandomString = length => {
 const stateKey = 'spotify_auth_state';
 
 //request authorization from spotify
-app.get('/login',(req,res) => {
+app.get('/login', cors(), (req,res) => {
     const state = generateRandomString(16);
     //setting a cookie with our state key and the state is the randomly generated string
     res.cookie(stateKey, state);
@@ -49,7 +50,7 @@ app.get('/login',(req,res) => {
 });
 
 //use auth code to request access token
-app.get('/callback',(req,res) => {
+app.get('/callback', cors(), (req,res) => {
     const code = req.query.code || null;
 
     axios({
@@ -83,12 +84,13 @@ app.get('/callback',(req,res) => {
 });
 
 //use refresh token to request another access token incase it expires
-app.get('/refresh_token',(req,res) => {
+app.get('/refresh_token', cors(), (req,res) => {
+    const { refresh_token } = req.query;
     axios({
         method: 'post',
         url: 'https://accounts.spotify.com/api/token',
         data: querystring.stringify({
-            grant_type: 'authorization_code',
+            grant_type: 'refresh_token',
             refresh_token: refresh_token,
         }),
         headers: {
@@ -100,7 +102,8 @@ app.get('/refresh_token',(req,res) => {
     }).catch(error => {
         res.send(error);
     })
-})
+});
+
 app.listen(port, () => {
     console.log(`express app listening at localhost:${port}`);
 });
