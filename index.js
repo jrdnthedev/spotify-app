@@ -32,7 +32,7 @@ const generateRandomString = length => {
 const stateKey = 'spotify_auth_state';
 
 //request authorization from spotify
-app.get('/login', cors(), (req,res) => {
+app.get('/login', (req,res) => {
     const state = generateRandomString(16);
     //setting a cookie with our state key and the state is the randomly generated string
     res.cookie(stateKey, state);
@@ -50,7 +50,7 @@ app.get('/login', cors(), (req,res) => {
 });
 
 //use auth code to request access token
-app.get('/callback', cors(), (req,res) => {
+app.get('/callback', (req,res) => {
     const code = req.query.code || null;
 
     axios({
@@ -67,10 +67,11 @@ app.get('/callback', cors(), (req,res) => {
         },
     }).then(response => {
         if(response.status === 200) {
-            const { access_token, refresh_token } = response.data;
+            const { access_token, refresh_token, expires_in } = response.data;
             const queryParams = querystring.stringify({
                 access_token,
-                refresh_token
+                refresh_token,
+                expires_in
             })
             //redirect to react app
             res.redirect(`http://localhost:3000/?${queryParams}`);
@@ -84,7 +85,7 @@ app.get('/callback', cors(), (req,res) => {
 });
 
 //use refresh token to request another access token incase it expires
-app.get('/refresh_token', cors(), (req,res) => {
+app.get('/refresh_token', (req,res) => {
     const { refresh_token } = req.query;
     axios({
         method: 'post',
