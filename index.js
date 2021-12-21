@@ -37,7 +37,11 @@ app.get('/login', (req,res) => {
     //setting a cookie with our state key and the state is the randomly generated string
     res.cookie(stateKey, state);
 
-    const scope = 'user-read-private user-read-email';
+    const scope = [
+        'user-read-private',
+        'user-read-email',
+        'user-top-read',
+      ].join(' ');
 
     const queryParams = querystring.stringify({
         client_id: CLIENT_ID,
