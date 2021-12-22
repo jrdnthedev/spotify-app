@@ -5,14 +5,19 @@ const cors = require('cors')
 const app = express().use('*', cors());
 const axios = require('axios');
 const port = 8888;
+const path = require('path');
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URL = process.env.REDIRECT_URL;
 const FRONTEND_URL = process.env.FRONTEND_URL;
 
-app.get('/',(req,res) => {
-    res.send('Hello World!');
+// Priority serve any static files.
+app.use(express.static(path.resolve(__dirname, './client/build')));
+
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
 
 /**
