@@ -9,6 +9,7 @@ const port = 8888;
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URL = process.env.REDIRECT_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 app.get('/',(req,res) => {
     res.send('Hello World!');
@@ -78,7 +79,7 @@ app.get('/callback', (req,res) => {
                 expires_in
             })
             //redirect to react app
-            res.redirect(`http://localhost:3000/?${queryParams}`);
+            res.redirect(`${FRONTEND_URL}/?${queryParams}`);
             //pass along tokens in query params
         } else {
             res.redirect(`/?${querystring.stringify({error:'invalid token value'})}`);
