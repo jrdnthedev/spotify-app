@@ -4,13 +4,13 @@ const querystring = require('querystring');
 const cors = require('cors')
 const app = express().use('*', cors());
 const axios = require('axios');
-const port = 8888;
 const path = require('path');
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URL = process.env.REDIRECT_URL;
 const FRONTEND_URL = process.env.FRONTEND_URL;
+const PORT = process.env.PORT || 8888;
 
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, './client/build')));
@@ -115,7 +115,6 @@ app.get('/refresh_token', (req,res) => {
     })
 });
 
-app.listen(port, () => {
-    console.log(`express app listening at localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Express app listening at http://localhost:${PORT}`);
 });
-
